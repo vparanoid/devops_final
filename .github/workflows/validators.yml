@@ -1,0 +1,27 @@
+name: Validators
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: ansible-lint
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: ansible
+          override-deps: ansible==2.9        
+          
+      - name: terraform-validate
+        uses: dflook/terraform-validate@v1.4.1
+        with:
+          path: terraform-ec2
