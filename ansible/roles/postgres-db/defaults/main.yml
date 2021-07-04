@@ -1,0 +1,6 @@
+---
+postgres_version: 13
+postgres_user: postgres
+postgres_pass: password
+postgres_port: 5432
+postgres_datadir: '/pgdata'
