@@ -1,0 +1,99 @@
+---
+- name: Install packages
+  apt:
+    name:
+      - "apt-transport-https"
+      - "ca-certificates"
+      - "curl"
+      - "software-properties-common"
+      - 'python3-pip'
+      - 'virtualenv'
+      - 'python3-setuptools'
+    update_cache: yes
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+
+- name: Create image dir
+  file:
+    path: "{{ docker_workdir }}"
+    state: directory
+    recurse: yes
+
+- name: Copy nginx conf
+  template:
+    src: "{{ nginx_conf }}"
+    dest: "{{ docker_workdir }}{{ nginx_conf }}"
+    owner: ubuntu
+    mode: 0644
+    force: yes
+
+- name: Copy nginx index
+  template:
+    src: "{{ nginx_index }}"
+    dest: "{{ docker_workdir }}{{ nginx_index }}"
+    owner: ubuntu
+    mode: 0644
+    force: yes
+
+- name: Copy dockerfile
+  template:
+    src: "dockerfile"
+    dest: "{{ docker_workdir }}dockerfile"
+    owner: ubuntu
+    mode: 0644
+    force: yes
+
+- name: Remove container
+  docker_container:
+    name: "{{ docker_name }}"
+    state: absent
+    force_kill: yes
+  ignore_errors: yes
+
+- name: Pull default Docker image
+  docker_image:
+    name: "{{ docker_image }}"
+    source: pull
+
+- name: Build image
+  docker_image:
+    name: "{{ docker_image }}:v1"
+    build:
+      path: "{{ docker_workdir }}"
+    source: build
+    state: present
+    force: yes
+
+- name: Create container
+  docker_container:
+    name: "{{ docker_name }}"
+    image: "{{ docker_image }}:v1"
+    working_dir: "{{docker_workdir}}"
+    published_ports: "{{ ports_forwarded }}"
+    restart_policy: unless-stopped
+    state: started
+
+- name: Check docker
+  shell: "docker ps -a"
+  register: docker_status
+  ignore_errors: yes
+
+- name: Check and report
+  debug:
+    msg: "{{ docker_status }}"

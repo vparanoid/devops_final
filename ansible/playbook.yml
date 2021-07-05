@@ -1,0 +1,8 @@
+---
+- name: Set ip web server
+  hosts: aws_ec2_instance_ip
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  roles:
+    - docker-web
