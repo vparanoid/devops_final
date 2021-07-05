@@ -19,8 +19,7 @@ jobs:
         uses: ansible/ansible-lint-action@master
         with:
           targets: ansible
-          override-deps: ansible==2.9        
-          
+
       - name: terraform-validate
         uses: dflook/terraform-validate@v1.4.1
         with:

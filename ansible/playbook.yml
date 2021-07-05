@@ -4,14 +4,5 @@
   remote_user: ubuntu
   become: yes
   become_method: sudo
-
-  tasks:
-  - name: Whoami
-    shell: 'uname -a; ip addr'
-    register: whoami
-    ignore_errors: yes
-
-  - name: Whoami output
-    debug:
-      msg: "{{ whoami.stdout }}"
-    ignore_errors: yes
+  roles:
+    - docker-web

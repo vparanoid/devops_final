@@ -1,0 +1,8 @@
+---
+docker_name: nginx-do
+docker_image: nginx
+docker_workdir: '/home/ubuntu/nginx-img/'
+nginx_conf: nginx.conf
+nginx_index: index.html
+nginx_index_path: '/var/www/html/'
+ports_forwarded: "80:80"
