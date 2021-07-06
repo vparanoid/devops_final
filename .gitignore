@@ -3,3 +3,4 @@
 .terraform
 terraform-ec2/*.tfstate
 terraform-ec2/*.tfstate.backup
+ansible/inventory.yml
