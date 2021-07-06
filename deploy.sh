@@ -20,7 +20,7 @@ WEB_IP=`echo ${WEB_IP} | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9
 
 echo "======== CHECK INSTANCE ======"
 
-#ping ${WEB_IP} -c 10
+ping ${WEB_IP} -c 15
 
 echo "======== CONFIGURING INSTANCE ======"
 
@@ -31,6 +31,6 @@ echo -e ${WEB_IP} >> inventory.yml
 ansible-playbook playbook.yml -i inventory.yml --key-file "${INSTANCE_SSH_KEY}" --diff -v
 
 echo "======== CHECK SERVICE ======"
-ping ${WEB_IP} -c 10
+ping ${WEB_IP} -c 15
 curl http://${WEB_IP}/
 
